@@ -95,10 +95,11 @@ bool ProcessEvents()
             case SDL_EVENT_FINGER_MOTION:
             case SDL_EVENT_FINGER_DOWN:
             case SDL_EVENT_FINGER_UP: {
-                int count = SDL_GetNumTouchFingers(Engine.sdlEvents.tfinger.touchId);
+                int count = 0;
+                SDL_GetTouchFingers(Engine.sdlEvents.tfinger.touchID, &count);
                 touches   = 0;
                 for (int i = 0; i < count; i++) {
-                    SDL_Finger *finger = SDL_GetTouchFinger(Engine.sdlEvents.tfinger.touchId, i);
+                    SDL_Finger *finger = *SDL_GetTouchFingers(Engine.sdlEvents.tfinger.touchID, &i);
                     if (finger) {
                         touchDown[touches] = true;
                         touchX[touches]    = finger->x * SCREEN_XSIZE;
@@ -110,7 +111,7 @@ bool ProcessEvents()
             }
 #endif
             case SDL_EVENT_KEY_DOWN:
-                switch (Engine.sdlEvents.key.keysym.sym) {
+                switch (Engine.sdlEvents.key.key) {
                     default: break;
 
                     case SDLK_ESCAPE:
@@ -231,7 +232,7 @@ bool ProcessEvents()
 
                 break;
             case SDL_EVENT_KEY_UP:
-                switch (Engine.sdlEvents.key.keysym.sym) {
+                switch (Engine.sdlEvents.key.key) {
                     default: break;
                     case SDLK_BACKSPACE: Engine.gameSpeed = 1; break;
                 }

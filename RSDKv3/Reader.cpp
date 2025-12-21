@@ -171,7 +171,11 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
 
     if (Engine.usingDataFile && !Engine.forceFolder) {
         cFileHandle = fOpen(rsdkName, "rb");
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, 0, SDL_IO_SEEK_END);
+#else
         fSeek(cFileHandle, 0, SEEK_END);
+#endif
         fileSize       = (int)fTell(cFileHandle);
         vFileSize      = fileSize;
         bufferPosition = 0;
@@ -208,12 +212,20 @@ bool LoadFile(const char *filePath, FileInfo *fileInfo)
         StrCopy(fileInfo->fileName, filePathBuf);
         StrCopy(fileName, filePathBuf);
         virtualFileOffset = 0;
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, 0, SDL_IO_SEEK_END);
+#else
         fSeek(cFileHandle, 0, SEEK_END);
+#endif
         fileInfo->fileSize  = (int)fTell(cFileHandle);
         fileInfo->vFileSize = fileInfo->fileSize;
         fileSize            = fileInfo->fileSize;
         vFileSize           = fileInfo->fileSize;
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, 0, SDL_IO_SEEK_SET);
+#else
         fSeek(cFileHandle, 0, SEEK_SET);
+#endif
         readPos                     = 0;
         fileInfo->readPos           = readPos;
         fileInfo->virtualFileOffset = 0;
@@ -259,8 +271,12 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
     for (i = 0; i < j; ++i) filename[i] = fileInfo->fileName[i + fNamePos];
     filename[j]            = 0;
     fullFilename[fNamePos] = 0;
-
+    
+#if RETRO_USING_SDL3
+    fSeek(cFileHandle, 0, SDL_IO_SEEK_SET);
+#else
     fSeek(cFileHandle, 0, SEEK_SET);
+#endif
     Engine.usingDataFile = false;
     bufferPosition       = 0;
     readSize             = 0;
@@ -341,7 +357,11 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
         return false;
     }
     else {
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, fileOffset + headerSize, SDL_IO_SEEK_SET);
+#else
         fSeek(cFileHandle, fileOffset + headerSize, SEEK_SET);
+#endif
         bufferPosition    = 0;
         readSize          = 0;
         readPos           = 0;
@@ -390,7 +410,11 @@ bool ParseVirtualFileSystem(FileInfo *fileInfo)
                 Engine.usingDataFile = true;
                 return false;
             }
+#if RETRO_USING_SDL3
+            fSeek(cFileHandle, virtualFileOffset, SDL_IO_SEEK_SET);
+#else
             fSeek(cFileHandle, virtualFileOffset, SEEK_SET);
+#endif
             bufferPosition = 0;
             readSize       = 0;
             readPos        = virtualFileOffset;
@@ -486,10 +510,18 @@ void SetFileInfo(FileInfo *fileInfo)
         cFileHandle       = fOpen(rsdkName, "rb");
         virtualFileOffset = fileInfo->virtualFileOffset;
         vFileSize         = fileInfo->fileSize;
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, 0, SDL_IO_SEEK_END);
+#else
         fSeek(cFileHandle, 0, SEEK_END);
+#endif
         fileSize = (int)fTell(cFileHandle);
         readPos  = fileInfo->readPos;
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, readPos, SDL_IO_SEEK_SET);
+#else
         fSeek(cFileHandle, readPos, SEEK_SET);
+#endif
         FillFileBuffer();
         bufferPosition = fileInfo->bufferPosition;
         eStringPosA    = fileInfo->eStringPosA;
@@ -503,7 +535,11 @@ void SetFileInfo(FileInfo *fileInfo)
         virtualFileOffset = 0;
         fileSize          = fileInfo->fileSize;
         readPos           = fileInfo->readPos;
+#if RETRO_USING_SDL3
+        fSeek(cFileHandle, readPos, SDL_IO_SEEK_SET);
+#else
         fSeek(cFileHandle, readPos, SEEK_SET);
+#endif
         FillFileBuffer();
         bufferPosition = fileInfo->bufferPosition;
         eStringPosA    = 0;
@@ -562,7 +598,11 @@ void SetFilePosition(int newPos)
     else {
         readPos = newPos;
     }
+#if RETRO_USING_SDL3
+    fSeek(cFileHandle, readPos, SDL_IO_SEEK_SET);
+#else
     fSeek(cFileHandle, readPos, SEEK_SET);
+#endif
     FillFileBuffer();
 }
 

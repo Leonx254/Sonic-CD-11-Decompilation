@@ -106,18 +106,22 @@ int InitRenderDevice()
 #if RETRO_USING_SDL2 || RETRO_USING_SDL3
 #if RETRO_USING_SDL3
     SDL_Init(SDL_INIT_GAMEPAD);
-    SDL_Init(SDL_INIT_TIMER);
     SDL_Init(SDL_INIT_AUDIO);
     SDL_Init(SDL_INIT_VIDEO);
 #else
     SDL_Init(SDL_INIT_EVERYTHING);
 #endif
 
-
+#if !RETRO_USING_SDL3
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, Engine.vsync ? "1" : "0");
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
     SDL_SetHint(SDL_HINT_WINRT_HANDLE_BACK_BUTTON, "1");
+#else
+    // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest"); // look where to place SDL_SetTextureScaleMode
+    SDL_SetHint(SDL_HINT_RENDER_VSYNC, Engine.vsync ? "1" : "0");
+    SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+#endif
 
     byte flags = 0;
 #if RETRO_USING_OPENGL
@@ -219,7 +223,7 @@ int InitRenderDevice()
 
     if (Engine.borderless) {
         SDL_RestoreWindow(Engine.window);
-        SDL_SetWindowBordered(Engine.window, SDL_FALSE);
+        SDL_SetWindowBordered(Engine.window, false);
     }
 
     SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -1260,8 +1264,10 @@ void ReleaseRenderDevice()
 #if RETRO_USING_OPENGL
 	if (Engine.glContext) {
         for (int i = 0; i < HW_TEXTURE_COUNT; i++) glDeleteTextures(1, &gfxTextureID[i]);
-#if RETRO_USING_SDL2 || RETRO_USING_SDL3
+#if RETRO_USING_SDL2
         SDL_GL_DeleteContext(Engine.glContext);
+#elif RETRO_USING_SDL3
+        SDL_GL_DestroyContext(Engine.glContext);
 #endif
 	}
 #endif
@@ -1364,7 +1370,7 @@ void SetFullScreen(bool fs)
 #endif
         Engine.useFBTexture = Engine.scalingMode;
 #if RETRO_USING_SDL2 || RETRO_USING_SDL3
-        SDL_SetWindowFullscreen(Engine.window, SDL_FALSE);
+        SDL_SetWindowFullscreen(Engine.window, false);
         SDL_SetWindowSize(Engine.window, SCREEN_XSIZE_CONFIG * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);
         SDL_SetWindowPosition(Engine.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
         SDL_RestoreWindow(Engine.window);

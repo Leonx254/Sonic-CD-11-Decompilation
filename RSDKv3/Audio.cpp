@@ -57,7 +57,7 @@ int InitAudioPlayback()
     audioDeviceFormat.channels = AUDIO_CHANNELS;
     audioDeviceFormat.freq     = AUDIO_FREQUENCY;
     SDL_AudioSpec ogv_want{ SDL_AUDIO_F32, AUDIO_CHANNELS, 48000 };
-    wav_stream  = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_OUTPUT, &audioDeviceFormat, ProcessAudioCallback, NULL);
+    wav_stream  = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &audioDeviceFormat, ProcessAudioCallback, NULL);
     audioDevice = SDL_GetAudioStreamDevice(wav_stream);
     if ((audioDevice > 0)) {
         audioEnabled = true;
@@ -737,7 +737,11 @@ void LoadSfx(char *filePath, byte sfxID)
         CloseFile();
 
         LockAudioDevice();
+#if RETRO_USING_SDL3
+        SDL_IOStream *src = SDL_IOFromMem(sfx, info.vFileSize);
+#else
         SDL_RWops *src = SDL_RWFromMem(sfx, info.vFileSize);
+#endif
         if (src == NULL) {
             PrintLog("Unable to open sfx: %s", info.fileName);
         }
@@ -746,7 +750,7 @@ void LoadSfx(char *filePath, byte sfxID)
             SDL_AudioSpec wav_spec;
             uint wav_length;
             Uint8 *wav_buffer;
-            int wav = SDL_LoadWAV_RW(src, SDL_TRUE, &wav_spec, &wav_buffer, &wav_length);
+            int wav = SDL_LoadWAV_IO(src, true, &wav_spec, &wav_buffer, &wav_length);
 
             delete[] sfx;
             if (wav != NULL) {

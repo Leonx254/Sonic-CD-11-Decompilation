@@ -527,7 +527,11 @@ void ControllerInit(byte controllerID)
 
 void ControllerClose(byte controllerID)
 {
+#if RETRO_USING_SDL3
+    SDL_Gamepad *controller = SDL_GetGamepadFromID(controllerID);
+#else
     SDL_Gamepad *controller = SDL_GetGamepadFromInstanceID(controllerID);
+#endif
     if (controller) {
         SDL_CloseGamepad(controller);
         controllers.erase(std::remove(controllers.begin(), controllers.end(), controller), controllers.end());
@@ -544,7 +548,7 @@ void ProcessInput()
 {
 #if RETRO_USING_SDL3
     int length           = 0;
-    const byte *keyState = SDL_GetKeyboardState(&length);
+    const bool *keyState = SDL_GetKeyboardState(&length);
 
     if (inputType == 0) {
         for (int i = 0; i < INPUT_ANY; i++) {
@@ -582,7 +586,7 @@ void ProcessInput()
         inputDevice[INPUT_ANY].setReleased();
 
     isPressed = false;
-    for (int i = 0; i < SDL_GAMEPAD_BUTTON_MAX; i++) {
+    for (int i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
         if (getControllerButton(i)) {
             isPressed = true;
             break;

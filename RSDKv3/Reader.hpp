@@ -15,13 +15,13 @@
 #else
 
 #if RETRO_USING_SDL3
-#define FileIO                                          SDL_RWops
-#define fOpen(path, mode)                               SDL_RWFromFile(path, mode)
-#define fRead(buffer, elementSize, file)                SDL_RWread(file, buffer, elementSize)
-#define fSeek(file, offset, whence)                     SDL_RWseek(file, offset, whence)
-#define fTell(file)                                     SDL_RWtell(file)
-#define fClose(file)                                    SDL_RWclose(file)
-#define fWrite(buffer, elementSize, file)               SDL_RWwrite(file, buffer, elementSize)
+#define FileIO                                          SDL_IOStream
+#define fOpen(path, mode)                               SDL_IOFromFile(path, mode)
+#define fRead(buffer, elementSize, file)                SDL_ReadIO(file, buffer, elementSize)
+#define fSeek(file, offset, whence)                     SDL_SeekIO(file, offset, whence)
+#define fTell(file)                                     SDL_TellIO(file)
+#define fClose(file)                                    SDL_CloseIO(file)
+#define fWrite(buffer, elementSize, file)               SDL_WriteIO(file, buffer, elementSize)
 #elif RETRO_USING_SDL2
 #define FileIO                                          SDL_RWops
 #define fOpen(path, mode)                               SDL_RWFromFile(path, mode)

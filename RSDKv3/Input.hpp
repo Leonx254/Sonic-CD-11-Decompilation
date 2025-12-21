@@ -56,7 +56,7 @@ extern bool anyPress;
 extern int touchDown[8];
 #if RETRO_USING_SDL3 && !RETRO_USING_ORIGINAL_CODE
 #undef SDL_CONTROLLER_BUTTON_MAX
-#define SDL_CONTROLLER_BUTTON_MAX SDL_GAMEPAD_BUTTON_MAX
+#define SDL_CONTROLLER_BUTTON_MAX SDL_GAMEPAD_BUTTON_COUNT
 extern float touchX[8];
 extern float touchY[8];
 #else
