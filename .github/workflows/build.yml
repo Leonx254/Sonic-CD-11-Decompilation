@@ -2,7 +2,7 @@ name: Build RSDKv3
 on:
   push:
     branches:
-      - master
+      - SDL3-dev
 
 env:
   GENERAL_FLAGS: "-DRETRO_DISABLE_PLUS=ON -DCMAKE_BUILD_TYPE=Release"
@@ -23,7 +23,7 @@ jobs:
         with:
           submodules: recursive
       - name: Install dependencies
-        run: vcpkg install glew sdl2 libogg libtheora libvorbis --triplet=x86-windows-static
+        run: vcpkg install glew sdl3 libogg libtheora libvorbis --triplet=x86-windows-static
       - name: Build RSDKv3
         run: |
           cmake -B build ${{env.GENERAL_FLAGS}} ${{env.GENERAL_WIN_FLAGS}} ${{env.WIN32_FLAGS}}
@@ -45,7 +45,7 @@ jobs:
         with:
           submodules: recursive
       - name: Install dependencies
-        run: vcpkg install glew sdl2 libogg libtheora libvorbis --triplet=x64-windows-static
+        run: vcpkg install glew sdl3 libogg libtheora libvorbis --triplet=x64-windows-static
       - name: Build RSDKv3
         run: |
           cmake -B build ${{env.GENERAL_FLAGS}} ${{env.GENERAL_WIN_FLAGS}} ${{env.WIN64_FLAGS}}
@@ -84,11 +84,11 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip" -OutFile "GLEW.zip"
           Expand-Archive -Path GLEW.zip -DestinationPath ./dependencies/android/
           Rename-Item ./dependencies/android/glew-2.2.0 glew
-      - name: Download SDL2
+      - name: Download SDL3
         run: |
-          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL2-2.28.3.zip" -OutFile "SDL2.zip"
-          Expand-Archive -Path SDL2.zip -DestinationPath ./android/app/jni/
-          Rename-Item ./android/app/jni/SDL2-2.28.3 SDL
+          Invoke-WebRequest -Uri "https://libsdl.org/release/SDL3-3.3.6.zip" -OutFile "SDL3.zip"
+          Expand-Archive -Path SDL3.zip -DestinationPath ./android/app/jni/
+          Rename-Item ./android/app/jni/SDL3-3.3.6.zip SDL
       - name: Move & Copy stuff
         run: |
           Copy-Item -Path ./dependencies/all/theoraplay -Destination ./dependencies/android/app/jni/src/dependencies/android/
@@ -119,7 +119,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libglew-dev libglfw3-dev libsdl2-dev libogg-dev libtheora-dev libvorbis-dev
+          sudo apt-get install libglew-dev libglfw3-dev libsdl3-dev libogg-dev libtheora-dev libvorbis-dev
       - name: Build RSDKv3
         run: |
           cmake -B build ${{env.GENERAL_FLAGS}} ${{env.GENERAL_LINUX_FLAGS}}
@@ -154,11 +154,11 @@ jobs:
             curl "https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.zip" --output "libtheora.zip"
             unzip libtheora.zip -d ./dependencies/mac/
             mv ./dependencies/mac/libtheora-1.1.1 ./dependencies/mac/libtheora
-        - name: Download SDL2
+        - name: Download SDL3
           run: |
-            curl "https://libsdl.org/release/SDL2-2.30.7.dmg" --output "SDL2.dmg"
-            hdiutil attach SDL2.dmg
-            cp -r /Volumes/SDL2/SDL2.framework ./dependencies/mac
+            curl "https://libsdl.org/release/SDL3-3.3.6.dmg" --output "SDL3.dmg"
+            hdiutil attach SDL3.dmg
+            cp -r /Volumes/SDL3/SDL3.framework ./dependencies/mac
         - name: Generate Vorbis headers
           working-directory: ./dependencies/mac/libogg/
           run: |
