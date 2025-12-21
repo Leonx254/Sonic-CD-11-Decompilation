@@ -88,7 +88,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://libsdl.org/release/SDL3-3.3.6.zip" -OutFile "SDL3.zip"
           Expand-Archive -Path SDL3.zip -DestinationPath ./android/app/jni/
-          Rename-Item ./android/app/jni/SDL3-3.3.6.zip SDL
+          Rename-Item ./android/app/jni/SDL3-3.3.6 SDL
       - name: Move & Copy stuff
         run: |
           Copy-Item -Path ./dependencies/all/theoraplay -Destination ./dependencies/android/app/jni/src/dependencies/android/
@@ -158,7 +158,7 @@ jobs:
           run: |
             curl "https://libsdl.org/release/SDL3-3.3.6.dmg" --output "SDL3.dmg"
             hdiutil attach SDL3.dmg
-            cp -r /Volumes/SDL3/SDL3.framework ./dependencies/mac
+            cp -r /Volumes/SDL3/SDL3.xcframework ./dependencies/mac
         - name: Generate Vorbis headers
           working-directory: ./dependencies/mac/libogg/
           run: |
