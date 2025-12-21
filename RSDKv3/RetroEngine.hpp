@@ -373,21 +373,33 @@ enum RetroBytecodeFormat {
 #include <theora/theora.h>
 #include <theoraplay.h>
 #elif RETRO_PLATFORM == RETRO_OSX
+#if RETRO_USING_SDL3
+#include <SDL3/SDL.h>
+#elif RETRO_USING_SDL2
 #include <SDL2/SDL.h>
+#endif
 #include <Vorbis/vorbisfile.h>
 #include <Theora/theora.h>
 #include "theoraplay.h"
 
 #include "cocoaHelpers.hpp"
 #elif RETRO_PLATFORM == RETRO_iOS
+#if RETRO_USING_SDL3
+#include <SDL3/SDL.h>
+#elif RETRO_USING_SDL2
 #include <SDL2/SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <Theora/theora.h>
 #include "theoraplay.h"
 
 #include "cocoaHelpers.hpp"
 #elif RETRO_PLATFORM == RETRO_VITA
+#if RETRO_USING_SDL3 // ...is it even compatible with SDL3?
+#include <SDL3/SDL.h>
+#elif RETRO_USING_SDL2
 #include <SDL2/SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>

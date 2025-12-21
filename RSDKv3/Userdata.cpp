@@ -310,9 +310,13 @@ void InitUserdata()
 #elif RETRO_PLATFORM == RETRO_ANDROID
     {
         char buffer[0x200];
-
+#if RETRO_USING_SDL3
+        JNIEnv *env      = (JNIEnv *)SDL_GetAndroidJNIEnv();
+        jobject activity = (jobject)SDL_GetAndroidActivity();
+#else
         JNIEnv *env      = (JNIEnv *)SDL_AndroidGetJNIEnv();
         jobject activity = (jobject)SDL_AndroidGetActivity();
+#endif
         jclass cls(env->GetObjectClass(activity));
         jmethodID method = env->GetMethodID(cls, "getBasePath", "()Ljava/lang/String;");
         auto ret         = env->CallObjectMethod(activity, method);
