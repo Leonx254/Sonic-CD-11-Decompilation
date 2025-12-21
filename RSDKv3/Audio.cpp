@@ -750,16 +750,16 @@ void LoadSfx(char *filePath, byte sfxID)
             SDL_AudioSpec wav_spec;
             uint wav_length;
             Uint8 *wav_buffer;
-            int wav = SDL_LoadWAV_IO(src, true, &wav_spec, &wav_buffer, &wav_length);
+            bool wav = SDL_LoadWAV_IO(src, true, &wav_spec, &wav_buffer, &wav_length);
 
             delete[] sfx;
-            if (wav != NULL) {
+            if (wav == NULL) {
                 PrintLog("Unable to read sfx: %s", info.fileName);
             }
             else {
                 Uint8 *dst_data = NULL;
                 int dst_length  = 0;
-                if (SDL_ConvertAudioSamples(&wav_spec, wav_buffer, wav_length, &audioDeviceFormat, &dst_data, &dst_length) == 0) {
+                if (SDL_ConvertAudioSamples(&wav_spec, wav_buffer, wav_length, &audioDeviceFormat, &dst_data, &dst_length) != 0) {
                     StrCopy(sfxList[sfxID].name, filePath);
                     sfxList[sfxID].buffer = (Sint16 *)dst_data;
                     sfxList[sfxID].length = dst_length / sizeof(Sint16);
