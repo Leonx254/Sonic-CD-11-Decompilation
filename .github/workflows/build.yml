@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
           mkdir artifacts
           mv ./build/Release/*.exe ./artifacts
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: v3-windows
           path: artifacts
@@ -41,7 +41,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Install dependencies
@@ -55,7 +55,7 @@ jobs:
           mkdir artifacts
           mv ./build/Release/*.exe ./artifacts
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: v3-windows-x64
           path: artifacts
@@ -63,7 +63,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository Android
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Setup MSBuild
@@ -105,7 +105,7 @@ jobs:
         run: |
           ./gradlew.bat assembleDebug --no-daemon -PABIFILTERS="armeabi-v7a;arm64-v8a" -PRETRO_DISABLE_PLUS
       - name: Upload artifact Android
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: v3-android
           path: ./android/app/build/outputs/apk
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Install dependencies
@@ -132,7 +132,7 @@ jobs:
           mv ./build/RSDKv3* ./artifacts
           tar -czvf linux.tar.gz -C ./artifacts .
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: v3-linux
           path: linux.tar.gz
@@ -140,7 +140,7 @@ jobs:
       runs-on: macos-latest
       steps:
         - name: Checkout
-          uses: actions/checkout@v4
+          uses: actions/checkout@v6
           with:
             submodules: recursive
         - name: Download libogg, libvorbis, and libtheora for easier includes
@@ -172,7 +172,7 @@ jobs:
             echo 'From this folder, run `xattr -cr RSDKv3.app` in Terminal to allow MacOS to open it.' > README.txt
             zip -r RSDKv3.zip .
         - name: Upload artifacts
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v6
           with:
             name: v3-mac
             path: build/Applications/RSDKv3.zip
