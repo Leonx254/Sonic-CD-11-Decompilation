@@ -158,7 +158,7 @@ jobs:
           run: |
             curl "https://libsdl.org/release/SDL3-3.3.6.dmg" --output "SDL3.dmg"
             hdiutil attach SDL3.dmg
-            cp -r /Volumes/SDL3/SDL3.xcframework ./dependencies/mac
+            cp -r /Volumes/SDL3/SDL3.xcframework/macos-arm64_x86_64/SDL3.framework ./dependencies/mac
         - name: Generate Vorbis headers
           working-directory: ./dependencies/mac/libogg/
           run: |
