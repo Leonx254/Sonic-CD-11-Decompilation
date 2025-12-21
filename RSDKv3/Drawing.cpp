@@ -61,7 +61,6 @@ byte texBufferMode = 0;
 #if !RETRO_USE_ORIGINAL_CODE
 int viewOffsetX = 0;
 int viewOffsetY = 0;
-int viewOffsetY = 0;
 #endif
 int viewWidth     = 0;
 int viewHeight    = 0;
@@ -1321,33 +1320,11 @@ void SetFullScreen(bool fs)
 #if RETRO_PLATFORM != RETRO_iOS && RETRO_PLATFORM != RETRO_ANDROID
         int winW = 0, winH = 0;
 #if RETRO_USING_OPENGL
-        SDL_GL_GetDrawableSize(Engine.window, &winW, &winH);
+#if RETRO_USING_SDL3
+        SDL_GetWindowSizeInPixels(Engine.window, &winW, &winH);
 #else
-        SDL_GetRendererOutputSize(Engine.renderer, &winW, &winH);
-#endif
-
-        scaleH       = winH / (float)SCREEN_YSIZE;
-
-        width        = scaleH * (float)SCREEN_XSIZE;
-        height       = winH;
-
-        if (width > winW) {
-            width = winW;
-
-            float scaleW = winW / (float)SCREEN_XSIZE;
-            height = scaleW * (float)SCREEN_YSIZE;
-
-            viewOffsetX = 0;
-            viewOffsetY = abs(winH - height) / 2;
-        }
-        else {
-            viewOffsetX = abs(winW - width) / 2;
-            viewOffsetY = 0;
-        }
-
-        int winW = 0, winH = 0;
-#if RETRO_USING_OPENGL
         SDL_GL_GetDrawableSize(Engine.window, &winW, &winH);
+#endif
 #else
         SDL_GetRendererOutputSize(Engine.renderer, &winW, &winH);
 #endif
@@ -1373,7 +1350,6 @@ void SetFullScreen(bool fs)
 
 #else
         viewOffsetX = 0;
-        viewOffsetY = 0;
         viewOffsetY = 0;
 #endif
 
@@ -1394,7 +1370,11 @@ void SetFullScreen(bool fs)
         SDL_RestoreWindow(Engine.window);
 #if RETRO_USING_OPENGL
         int drawableWidth, drawableHeight;
+#if RETRO_USING_SDL3
+        SDL_GetWindowSizeInPixels(Engine.window, &drawableWidth, &drawableHeight);
+#else
         SDL_GL_GetDrawableSize(Engine.window, &drawableWidth, &drawableHeight);
+#endif
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, drawableWidth, drawableHeight);
 #else
         SetScreenDimensions(SCREEN_XSIZE, SCREEN_YSIZE, SCREEN_XSIZE * Engine.windowScale, SCREEN_YSIZE * Engine.windowScale);

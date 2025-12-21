@@ -64,12 +64,11 @@ if(RETRO_USE_HW_RENDER)
 endif()
 
 if(RETRO_SDL_VERSION STREQUAL "3")
-    # vcpkg doesn't have an SDL3 package yet :(
-    #find_package(SDL3 CONFIG REQUIRED)
-    add_subdirectory(dependencies/${DEP_PATH}/SDL3)
+    find_package(SDL3 CONFIG REQUIRED)
     target_link_libraries(RetroEngine
-        SDL3::SDL3
-    )
+        $<TARGET_NAME_IF_EXISTS:SDL3::SDL3main>
+        $<IF:$<TARGET_EXISTS:SDL3::SDL3>,SDL3::SDL3,SDL3::SDL3-static>
+)
 elseif(RETRO_SDL_VERSION STREQUAL "2")
     find_package(SDL2 CONFIG REQUIRED)
     target_link_libraries(RetroEngine
